@@ -37,7 +37,7 @@ def main(blob: func.InputStream):
         device_sql = text(f"SELECT id FROM tracking_device WHERE source_device_type = '{source_device_type}' AND deviceid LIKE '%{deviceid}'")
         device = conn.execute(device_sql).fetchone()
 
-        if device:  # Only insert a loggedpoint if we matched a deviceid.
+        if device:  # Only update reading and insert a loggedpoint if we matched a deviceid.
             coords = data["GPS"]["coordinates"]
             point = f"SRID=4326;POINT({coords[0]} {coords[1]})"
             heading = float(data["readings"]["vehicleHeading"]) if data["readings"]["vehicleHeading"] else 0
@@ -46,6 +46,20 @@ def main(blob: func.InputStream):
             seen = timestamp.strftime("%Y-%m-%d %H:%M:%S")
             device_id = device[0]
             message = 3
+
+            # Update device details
+            device_sql = text(
+                f"""UPDATE tracking_device
+                SET seen = '{seen}'::timestamp with time zone,
+                    point = '{point}'::geometry,
+                    velocity = {velocity},
+                    altitude = {altitude},
+                    heading = {heading}
+                WHERE id = {device_id}
+                """
+            )
+
+            # Insert new loggedpoint record.
             loggedpoint_sql = text(
                 f"""INSERT INTO tracking_loggedpoint (
                     point,
