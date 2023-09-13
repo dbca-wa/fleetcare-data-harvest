@@ -2,7 +2,7 @@ import azure.functions as func
 from datetime import datetime, timedelta
 import json
 import os
-from pytz import timezone
+from pytz import timezone, utc
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
 
@@ -31,7 +31,6 @@ def main(blob: func.InputStream):
     engine = create_engine(database_url)
 
     with engine.connect() as conn:
-        conn.execute(text("SET TIMEZONE = 'Australia/Perth'"))  # Ensure that TZ is set correctly.
         source_device_type = "fleetcare"
         deviceid = data["vehicleID"]
         device_sql = text(f"SELECT id FROM tracking_device WHERE source_device_type = '{source_device_type}' AND deviceid LIKE '%{deviceid}'")
@@ -43,6 +42,8 @@ def main(blob: func.InputStream):
             heading = float(data["readings"]["vehicleHeading"]) if data["readings"]["vehicleHeading"] else 0
             velocity = float(data["readings"]["vehicleSpeed"]) if data["readings"]["vehicleSpeed"] else 0
             altitude = float(data["readings"]["vehicleAltitude"]) if data["readings"]["vehicleAltitude"] else 0
+            # Convert the timestamp to UTC.
+            timestamp = timestamp.astimezone(utc)
             seen = timestamp.strftime("%Y-%m-%d %H:%M:%S")
             device_id = device[0]
             message = 3
