@@ -14,6 +14,9 @@ https://learn.microsoft.com/en-us/azure/azure-functions/functions-reference-pyth
 Develop Azure Functions locally using Core Tools:
 https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=linux%2Cisolated-process%2Cnode-v4%2Cpython-v2%2Chttp-trigger%2Ccontainer-apps&pivots=programming-language-python
 
+Azure Functions Core Tools reference:
+https://learn.microsoft.com/en-us/azure/azure-functions/functions-core-tools-reference?tabs=v2
+
 Create a Python Python from the command line:
 https://learn.microsoft.com/en-us/azure/azure-functions/create-first-function-cli-python?tabs=linux%2Cbash%2Cazure-cli&pivots=python-mode-configuration
 
@@ -43,3 +46,6 @@ file to configure function, containing the following values:
 ```
 
 Make changes and run the function locally using `func start`.
+
+Publish the function to Azure using `func azure functionapp publish`:
+https://learn.microsoft.com/en-us/azure/azure-functions/functions-core-tools-reference?tabs=v2#func-azure-functionapp-publish
