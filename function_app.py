@@ -2,7 +2,7 @@ import azure.functions as func
 from datetime import datetime, timedelta
 import json
 import os
-from pytz import timezone, utc
+from pytz import timezone
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
 
@@ -42,16 +42,14 @@ def main(blob: func.InputStream):
             heading = float(data["readings"]["vehicleHeading"]) if data["readings"]["vehicleHeading"] else 0
             velocity = float(data["readings"]["vehicleSpeed"]) if data["readings"]["vehicleSpeed"] else 0
             altitude = float(data["readings"]["vehicleAltitude"]) if data["readings"]["vehicleAltitude"] else 0
-            # Convert the timestamp to UTC.
-            timestamp = timestamp.astimezone(utc)
-            seen = timestamp.strftime("%Y-%m-%d %H:%M:%S")
+            seen = timestamp.strftime("%Y-%m-%d %H:%M:%S+8")
             device_id = device[0]
             message = 3
 
             # Update device details
             device_sql = text(
                 f"""UPDATE tracking_device
-                SET seen = '{seen}'::timestamp with time zone,
+                SET seen = '{seen}'::timestamptz,
                     point = '{point}'::geometry,
                     velocity = {velocity},
                     altitude = {altitude},
@@ -59,6 +57,7 @@ def main(blob: func.InputStream):
                 WHERE id = {device_id}
                 """
             )
+            conn.execute(device_sql)
 
             # Insert new loggedpoint record.
             loggedpoint_sql = text(
@@ -78,7 +77,7 @@ def main(blob: func.InputStream):
                     {heading},
                     {velocity},
                     {altitude},
-                    '{seen}'::timestamp with time zone,
+                    '{seen}'::timestamptz,
                     {device_id},
                     {message},
                     '{source_device_type}',
