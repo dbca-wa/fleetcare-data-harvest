@@ -33,18 +33,20 @@ def main(blob: func.InputStream):
     with engine.connect() as conn:
         source_device_type = "fleetcare"
         deviceid = data["vehicleID"]
+        rego = data["vehicleRego"]
+        coords = data["GPS"]["coordinates"]
+        point = f"SRID=4326;POINT({coords[0]} {coords[1]})"
+        heading = float(data["readings"]["vehicleHeading"]) if data["readings"]["vehicleHeading"] else 0
+        velocity = float(data["readings"]["vehicleSpeed"]) if data["readings"]["vehicleSpeed"] else 0
+        altitude = float(data["readings"]["vehicleAltitude"]) if data["readings"]["vehicleAltitude"] else 0
+        seen = timestamp.strftime("%Y-%m-%d %H:%M:%S+8")
+        message = 3
+
         device_sql = text(f"SELECT id FROM tracking_device WHERE source_device_type = '{source_device_type}' AND deviceid LIKE '%{deviceid}'")
         device = conn.execute(device_sql).fetchone()
 
-        if device:  # Only update reading and insert a loggedpoint if we matched a deviceid.
-            coords = data["GPS"]["coordinates"]
-            point = f"SRID=4326;POINT({coords[0]} {coords[1]})"
-            heading = float(data["readings"]["vehicleHeading"]) if data["readings"]["vehicleHeading"] else 0
-            velocity = float(data["readings"]["vehicleSpeed"]) if data["readings"]["vehicleSpeed"] else 0
-            altitude = float(data["readings"]["vehicleAltitude"]) if data["readings"]["vehicleAltitude"] else 0
-            seen = timestamp.strftime("%Y-%m-%d %H:%M:%S+8")
+        if device:  # Only update device data if we matched an existing deviceid.
             device_id = device[0]
-            message = 3
 
             # Update device details
             device_sql = text(
@@ -58,33 +60,72 @@ def main(blob: func.InputStream):
                 """
             )
             conn.execute(device_sql)
-
-            # Insert new loggedpoint record.
-            loggedpoint_sql = text(
-                f"""INSERT INTO tracking_loggedpoint (
+        else:  # Create a new device.
+            new_device_sql = text(
+                f"""INSERT INTO tracking_device (
+                    deviceid,
+                    registration,
+                    symbol,
+                    district,
+                    district_display,
+                    internal_only,
+                    hidden,
+                    deleted,
+                    seen,
                     point,
                     heading,
                     velocity,
                     altitude,
-                    seen,
-                    device_id,
                     message,
-                    source_device_type,
-                    raw
-                )
-                VALUES (
+                    source_device_type
+                ) VALUES (
+                    'fc_{deviceid}',
+                    '{rego}',
+                    'other',
+                    'OTH',
+                    'Other',
+                    False,
+                    False,
+                    False,
+                    '{seen}'::timestamptz,
                     '{point}'::geometry,
                     {heading},
                     {velocity},
                     {altitude},
-                    '{seen}'::timestamptz,
-                    {device_id},
-                    {message},
-                    '{source_device_type}',
-                    '{blob.name}'
+                    3,
+                    '{source_device_type}'
                 )"""
             )
-            conn.execute(loggedpoint_sql)
+            conn.execute(new_device_sql)
             conn.commit()
+            device = conn.execute(device_sql).fetchone()
+            device_id = device[0]
 
+        # Insert new loggedpoint record.
+        loggedpoint_sql = text(
+            f"""INSERT INTO tracking_loggedpoint (
+                point,
+                heading,
+                velocity,
+                altitude,
+                seen,
+                device_id,
+                message,
+                source_device_type,
+                raw
+            )
+            VALUES (
+                '{point}'::geometry,
+                {heading},
+                {velocity},
+                {altitude},
+                '{seen}'::timestamptz,
+                {device_id},
+                {message},
+                '{source_device_type}',
+                '{blob.name}'
+            )"""
+        )
+        conn.execute(loggedpoint_sql)
+        conn.commit()
         conn.close()

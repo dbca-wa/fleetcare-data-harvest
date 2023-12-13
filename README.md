@@ -47,5 +47,5 @@ file to configure function, containing the following values:
 
 Make changes and run the function locally using `func start`.
 
-Publish the function to Azure using `func azure functionapp publish`:
+Publish the function to Azure using `func azure functionapp publish <APP_NAME>`:
 https://learn.microsoft.com/en-us/azure/azure-functions/functions-core-tools-reference?tabs=v2#func-azure-functionapp-publish
