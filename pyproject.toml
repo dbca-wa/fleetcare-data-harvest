@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "fleetcare-data-harvest"
+version = "1.0.0"
+description = "An Azure Function to harvest Fleetcare tracking data uploaded as blobs into a database"
+authors = ["Ashley Felton <ashley@ropable.com>"]
+license = "Apache-2.0"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+azure-functions = "1.17.0"
+pytz = "2023.3.post1"
+sqlalchemy = "2.0.20"
+psycopg = {version = "3.1.10", extras = ["binary", "pool"]}
+
+[tool.poetry.group.dev.dependencies]
+ipython = "^8.26.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
