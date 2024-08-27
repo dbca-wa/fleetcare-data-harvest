@@ -37,16 +37,21 @@ Activate the Poetry virtualenv like so:
 
     poetry shell
 
-Create a `local.settings.json` file to configure function, containing the following values:
+Create a `.env` file containing
+This project uses `python-dotevn` to set environment variables (in a `.env` file).
+The following variables are required for the project to run:
+
+    DATABASE_URL="postgis://USER:PASSWORD@HOST:PORT/DATABASE_NAME"
+
+Create a `local.settings.json` file to configure the function app, containing the following values:
 
 ```json
 {
   "IsEncrypted": false,
   "Values": {
-    "FUNCTIONS_WORKER_RUNTIME": "python",
     "AzureWebJobsFeatureFlags": "EnableWorkerIndexing",
     "AzureWebJobsStorage": "<CONNECTION STRING FROM STORAGE ACCOUNT>",
-    "DATABASE_URL": "<DATABASE CONNECTION STRING>",
+    "FUNCTIONS_WORKER_RUNTIME": "python",
     "STORAGE_CONNECTION_STRING": "<CONNECTION STRING FROM STORAGE ACCOUNT>"
   }
 }
