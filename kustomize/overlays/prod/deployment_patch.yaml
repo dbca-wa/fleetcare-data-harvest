@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleetcare-data-harvest
+  labels:
+    app: fleetcare-data-harvest-prod
+spec:
+  selector:
+    matchLabels:
+      app: fleetcare-data-harvest-prod
+  template:
+    metadata:
+      labels:
+        app: fleetcare-data-harvest-prod
+    spec:
+      containers:
+      - name: fleetcare-data-harvest
+        imagePullPolicy: Always
+        env:
+          - name: AzureWebJobsStorage
+            valueFrom:
+              secretKeyRef:
+                name: fleetcare-data-harvest-env-prod
+                key: AzureWebJobsStorage
+          - name: DATABASE_URL
+            valueFrom:
+              secretKeyRef:
+                name: fleetcare-data-harvest-env-prod
+                key: DATABASE_URL
+          - name: STORAGE_CONNECTION_STRING
+            valueFrom:
+              secretKeyRef:
+                name: fleetcare-data-harvest-env-prod
+                key: STORAGE_CONNECTION_STRING

@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleetcare-data-harvest
+spec:
+  strategy:
+    type: RollingUpdate
+  template:
+    spec:
+      containers:
+      - name: fleetcare-data-harvest
+        image: ghcr.io/dbca-wa/fleetcare-data-harvest
+        env:
+          - name: TZ
+            value: "Australia/Perth"
+          - name: AzureWebJobsFeatureFlags
+            value: "EnableWorkerIndexing"
+          - name: FUNCTIONS_WORKER_RUNTIME
+            value: "python"
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "5m"
+          limits:
+            memory: "2048Mi"
+            cpu: "500m"
+        securityContext:
+          runAsNonRoot: true
+          privileged: false
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+          readOnlyRootFilesystem: true
+        volumeMounts:
+          - mountPath: /tmp
+            name: tmpfs-ram
+      volumes:
+        - name: tmpfs-ram
+          emptyDir:
+            medium: "Memory"
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 180
