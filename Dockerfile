@@ -26,4 +26,4 @@ RUN chown -R appuser:appuser /azure-functions-host
 ENV ASPNETCORE_URLS=http://+:8080
 EXPOSE 8080
 
-USER appuser
+USER ${UID}
