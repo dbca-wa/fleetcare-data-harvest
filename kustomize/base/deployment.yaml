@@ -19,11 +19,11 @@ spec:
             value: "python"
         resources:
           requests:
-            memory: "64Mi"
+            memory: "256Mi"
             cpu: "5m"
           limits:
             memory: "2048Mi"
-            cpu: "500m"
+            cpu: "1000m"
         securityContext:
           runAsNonRoot: true
           privileged: false
