@@ -25,8 +25,7 @@ LOGGER = configure_logging()
 
 # Database connection - create a DB engine and a scoped session for queries.
 # https://docs.sqlalchemy.org/en/20/orm/contextual.html#unitofwork-contextual
-database_url = os.getenv("DATABASE_URL")
-db_engine = create_engine(database_url)
+db_engine = create_engine(os.getenv("DATABASE_URL"))
 SESSION = scoped_session(sessionmaker(bind=db_engine, autoflush=True))()
 
 
@@ -94,26 +93,30 @@ def handle_post():
                 message = 3
 
                 device_sql = text(
-                    f"SELECT id FROM tracking_device WHERE source_device_type = '{source_device_type}' AND deviceid LIKE '%{deviceid}'"
+                    f"SELECT id, seen FROM tracking_device WHERE source_device_type = '{source_device_type}' AND deviceid LIKE '%{deviceid}'"
                 )
                 device = SESSION.execute(device_sql).fetchone()
 
+                # NOTE: Tracking points may be delivered out of order.
                 if device:
-                    # Only update device data if we matched an existing deviceid.
                     device_id = device[0]
+                    device_seen = device[1]
 
-                    # Update existing device details.
-                    device_sql = text(
-                        f"""UPDATE tracking_device
-                        SET seen = '{seen}'::timestamptz,
-                            point = '{point}'::geometry,
-                            velocity = {velocity},
-                            altitude = {altitude},
-                            heading = {heading}
-                        WHERE id = {device_id}
-                        """
-                    )
-                    SESSION.execute(device_sql)
+                    # Only update device data if the tracking point was newer than the current device data.
+                    if timestamp > device_seen:
+                        # Update existing device details.
+                        device_sql = text(
+                            f"""UPDATE tracking_device
+                            SET seen = '{seen}'::timestamptz,
+                                point = '{point}'::geometry,
+                                velocity = {velocity},
+                                altitude = {altitude},
+                                heading = {heading}
+                            WHERE id = {device_id}
+                            """
+                        )
+                        SESSION.execute(device_sql)
+                        LOGGER.info(f"Updated device ID {device_id}: {rego}, {seen}")
                 else:  # Create a new device.
                     new_device_sql = text(
                         f"""INSERT INTO tracking_device (
@@ -151,7 +154,7 @@ def handle_post():
                         )"""
                     )
                     SESSION.execute(new_device_sql)
-                    LOGGER.info(f"Created new device fc_{deviceid}")
+                    LOGGER.info(f"Created device fc_{deviceid}: {rego}, {seen}")
                     device = SESSION.execute(device_sql).fetchone()
                     device_id = device[0]
 
@@ -181,9 +184,7 @@ def handle_post():
                     )"""
                 )
                 SESSION.execute(loggedpoint_sql)
-                LOGGER.info(
-                    f"Logged point for device ID {device_id}: {rego}, {seen}"
-                )
+                LOGGER.info(f"Logged point for device ID {device_id}: {rego}, {seen}")
                 SESSION.commit()
 
     return "OK"
