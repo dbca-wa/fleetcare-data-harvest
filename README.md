@@ -28,7 +28,9 @@ Manage new or updating project dependencies with Poetry also, like so:
 This project uses **python-dotenv** to set environment variables (in a `.env` file):
 
     PORT=8080  # Optional
-    DATABASE_URL="postgis://USER:PASSWORD@HOST:5432/DATABASE_NAME"
+    DATABASE_URL=postgis://USER:PASSWORD@HOST:5432/DATABASE_NAME
+    AZURE_STORAGE_CONNECTION_STRING=AzureConnectionString
+    AZURE_CONTAINER=container
 
 ## Running
 

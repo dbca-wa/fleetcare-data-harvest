@@ -4,7 +4,7 @@ import os
 import sys
 
 
-def configure_logging(logfile=None, azure_logfile=None):
+def configure_logging():
     """
     Configure logging (stdout and file) for the default logger and for the `azure` logger.
     """
