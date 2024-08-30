@@ -1,31 +1,9 @@
-# Azure Function: Fleetcare tracking data harvest
+# Fleetcare data harvest service
 
-This is a basic Azure Function to harvest Fleetcare tracking data into a
-database, triggered by a BlobTrigger event.
+A basic web service to act as a webhook for an Azure EventGrid subscription (BlobCreated events),
+ingest data from uploaded blobs, and create tracking data within the Resource Tracking database.
 
-## Documentation references
-
-Azure Functions developer guide:
-<https://learn.microsoft.com/en-us/azure/azure-functions/functions-reference?tabs=blob>
-
-Azure Functions Python developer guide:
-<https://learn.microsoft.com/en-us/azure/azure-functions/functions-reference-python?tabs=asgi%2Capplication-level&pivots=python-mode-decorators>
-
-Develop Azure Functions locally using Core Tools:
-<https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=linux%2Cisolated-process%2Cnode-v4%2Cpython-v2%2Chttp-trigger%2Ccontainer-apps&pivots=programming-language-python>
-
-Azure Functions Core Tools reference:
-<https://learn.microsoft.com/en-us/azure/azure-functions/functions-core-tools-reference?tabs=v2>
-
-Create a Python Python from the command line:
-<https://learn.microsoft.com/en-us/azure/azure-functions/create-first-function-cli-python?tabs=linux%2Cbash%2Cazure-cli&pivots=python-mode-configuration>
-
-Azure blob storage trigger for Azure Functions:
-<https://learn.microsoft.com/en-us/azure/azure-functions/functions-bindings-storage-blob-trigger?tabs=python-v2%2Cin-process&pivots=programming-language-python>
-
-## Local development
-
-Install the Azure Functions Core Tools, as per the links above.
+## Installation
 
 The recommended way to set up this project for development is using
 [Poetry](https://python-poetry.org/docs/) to install and manage a virtual Python
@@ -33,31 +11,49 @@ environment. With Poetry installed, change into the project directory and run:
 
     poetry install
 
-Activate the Poetry virtualenv like so:
+Activate the virtualenv like so:
 
     poetry shell
 
-Create a `.env` file containing
-This project uses `python-dotevn` to set environment variables (in a `.env` file).
-The following variables are required for the project to run:
+To run Python commands in the virtualenv, thereafter run them like so:
 
-    DATABASE_URL="postgis://USER:PASSWORD@HOST:PORT/DATABASE_NAME"
+    python manage.py
 
-Create a `local.settings.json` file to configure the function app, containing the following values:
+Manage new or updating project dependencies with Poetry also, like so:
 
-```json
-{
-  "IsEncrypted": false,
-  "Values": {
-    "AzureWebJobsFeatureFlags": "EnableWorkerIndexing",
-    "AzureWebJobsStorage": "<CONNECTION STRING FROM STORAGE ACCOUNT>",
-    "FUNCTIONS_WORKER_RUNTIME": "python",
-    "STORAGE_CONNECTION_STRING": "<CONNECTION STRING FROM STORAGE ACCOUNT>"
-  }
-}
-```
+    poetry add newpackage==1.0
 
-Make changes and run the function locally using `func start`.
+## Environment variables
 
-Publish the function to Azure using `func azure functionapp publish <APP_NAME>`:
-<https://learn.microsoft.com/en-us/azure/azure-functions/functions-core-tools-reference?tabs=v2#func-azure-functionapp-publish>
+This project uses **python-dotenv** to set environment variables (in a `.env` file):
+
+    PORT=8080  # Optional
+    DATABASE_URL="postgis://USER:PASSWORD@HOST:5432/DATABASE_NAME"
+
+## Running
+
+Run a local copy of the application like so:
+
+    python fleetcare_data_harvest.py
+
+The application runs on port 8080 by default. To change this, set an environment
+variable value for `PORT`.
+
+## Docker image
+
+To build a new Docker image from the `Dockerfile`:
+
+    docker image build -t ghcr.io/dbca-wa/fleetcare-data-harvest .
+
+## Pre-commit hooks
+
+This project includes the following pre-commit hooks:
+
+- TruffleHog (credential scanning): <https://github.com/marketplace/actions/trufflehog-oss>
+
+Pre-commit hooks may have additional system dependencies to run. Optionally
+install pre-commit hooks locally like so (with the virtualenv activated first):
+
+    pre-commit install
+
+Reference: <https://pre-commit.com/>

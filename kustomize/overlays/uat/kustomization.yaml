@@ -3,14 +3,17 @@ kind: Kustomization
 nameSuffix: -uat
 resources:
   - ../../base
+  - ingress.yaml
+  - pdb.yaml
 secretGenerator:
   - name: fleetcare-data-harvest-env
     type: Opaque
     envs:
-    - .env
+      - .env
 labels:
   - includeSelectors: true
     pairs:
       variant: uat
 patches:
   - path: deployment_patch.yaml
+  - path: service_patch.yaml

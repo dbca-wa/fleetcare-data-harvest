@@ -17,18 +17,18 @@ spec:
       - name: fleetcare-data-harvest
         imagePullPolicy: Always
         env:
-          - name: AzureWebJobsStorage
-            valueFrom:
-              secretKeyRef:
-                name: fleetcare-data-harvest-env-uat
-                key: AzureWebJobsStorage
           - name: DATABASE_URL
             valueFrom:
               secretKeyRef:
                 name: fleetcare-data-harvest-env-uat
                 key: DATABASE_URL
-          - name: STORAGE_CONNECTION_STRING
+          - name: AZURE_STORAGE_CONNECTION_STRING
             valueFrom:
               secretKeyRef:
                 name: fleetcare-data-harvest-env-uat
-                key: STORAGE_CONNECTION_STRING
+                key: AZURE_STORAGE_CONNECTION_STRING
+          - name: AZURE_CONTAINER
+            valueFrom:
+              secretKeyRef:
+                name: fleetcare-data-harvest-env-uat
+                key: AZURE_CONTAINER
