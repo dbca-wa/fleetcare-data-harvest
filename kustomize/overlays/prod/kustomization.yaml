@@ -17,3 +17,6 @@ labels:
 patches:
   - path: deployment_patch.yaml
   - path: service_patch.yaml
+images:
+  - name: ghcr.io/dbca-wa/fleetcare-data-harvest
+    newTag: 1.0.0
