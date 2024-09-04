@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fleetcare-data-harvest"
-version = "1.0.0"
+version = "1.0.1"
 description = "A basic web service to act as a webhook for an Azure EventGrid subscription (BlobCreated events)"
 authors = ["Ashley Felton <ashley@ropable.com>"]
 license = "Apache-2.0"
