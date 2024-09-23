@@ -9,7 +9,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = ">=3.11,<3.13"
 bottle = "0.13.1"
-sqlalchemy = "2.0.34"
+sqlalchemy = "2.0.35"
 psycopg = { version = "3.2.2", extras = ["binary", "pool"] }
 python-dotenv = "1.0.1"
 azure-storage-blob = "12.22.0"
