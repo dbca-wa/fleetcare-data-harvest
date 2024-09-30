@@ -7,12 +7,12 @@ license = "Apache-2.0"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.11,<3.13"
+python = "^3.12"
 bottle = "0.13.1"
-sqlalchemy = "2.0.34"
-psycopg = { version = "3.2.2", extras = ["binary", "pool"] }
+sqlalchemy = "2.0.35"
+psycopg = {version = "3.2.3", extras = ["binary", "pool"]}
 python-dotenv = "1.0.1"
-azure-storage-blob = "12.22.0"
+azure-storage-blob = "12.23.1"
 gunicorn = "23.0.0"
 
 [tool.poetry.group.dev.dependencies]
