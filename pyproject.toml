@@ -16,7 +16,7 @@ azure-storage-blob = "12.23.1"
 gunicorn = "23.0.0"
 
 [tool.poetry.group.dev.dependencies]
-ipython = "^8.27.0"
+ipython = "^8.28.0"
 pre-commit = "^3.7.1"
 
 [build-system]
