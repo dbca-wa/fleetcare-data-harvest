@@ -1,15 +1,15 @@
 #!/usr/bin/python
-from bottle import Bottle, request
-from datetime import datetime
 import json
 import os
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, scoped_session
-from sqlalchemy.sql import text
+from datetime import datetime
 from zoneinfo import ZoneInfo
 
-from utils import configure_logging, get_blob_client
+from bottle import Bottle, request
+from sqlalchemy import create_engine
+from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.sql import text
 
+from utils import configure_logging, get_blob_client
 
 dot_env = os.path.join(os.getcwd(), ".env")
 if os.path.exists(dot_env):
@@ -90,6 +90,7 @@ def handle_post():
                     data["timestamp"], "%d/%m/%Y %I:%M:%S %p"
                 ).astimezone(TZ)
                 seen = timestamp.strftime("%Y-%m-%d %H:%M:%S+8")
+                now_awst = datetime.now().astimezone(TZ)
                 message = 3
 
                 device_sql = text(
@@ -102,8 +103,12 @@ def handle_post():
                     device_id = device[0]
                     device_seen = device[1]
 
-                    # Only update device data if the tracking point was newer than the current device data.
-                    if timestamp > device_seen:
+                    # Only update device data if the tracking point was newer than the current device data,
+                    # and the tracking point timestamp is no later than "now" in AWST.
+                    # Tracking devices sometimes move outside the AWST boundaries, and thus may appear to be
+                    # multiple hours into the future. We still preserve the tracking data, but we won't
+                    # update the device "last seen" field in this circumstance.
+                    if timestamp > device_seen and timestamp <= now_awst:
                         # Update existing device details.
                         device_sql = text(
                             f"""UPDATE tracking_device
