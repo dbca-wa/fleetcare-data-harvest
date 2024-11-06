@@ -94,7 +94,7 @@ def handle_post():
                 message = 3
 
                 device_sql = text(
-                    f"SELECT id, seen FROM tracking_device WHERE source_device_type = '{source_device_type}' AND deviceid LIKE '%{deviceid}'"
+                    f"SELECT id, seen, registration FROM tracking_device WHERE source_device_type = '{source_device_type}' AND deviceid LIKE '%{deviceid}'"
                 )
                 device = SESSION.execute(device_sql).fetchone()
 
@@ -102,7 +102,21 @@ def handle_post():
                 if device:
                     device_id = device[0]
                     device_seen = device[1]
+                    device_rego = device[2]
 
+                    # If the device registration differs from Fleetcare data, assume that the tracking device
+                    # has been moved between vehicles and update the registration value in Resource Tracking.
+                    if rego != device_rego:
+                        device_sql = text(
+                            f"""UPDATE tracking_device
+                            SET registration = '{rego}'
+                            WHERE id = {device_id}
+                            """
+                        )
+                        SESSION.execute(device_sql)
+                        LOGGER.info(
+                            f"Updated device ID {device_id} registration to {rego}"
+                        )
                     # Only update device data if the tracking point was newer than the current device data,
                     # and the tracking point timestamp is no later than "now" in AWST.
                     # Tracking devices sometimes move outside the AWST boundaries, and thus may appear to be
@@ -121,7 +135,9 @@ def handle_post():
                             """
                         )
                         SESSION.execute(device_sql)
-                        LOGGER.info(f"Updated device ID {device_id}: {rego}, {seen}")
+                        LOGGER.info(
+                            f"Updated device ID {device_id} ({rego}) last seen to {seen}"
+                        )
                 else:  # Create a new device.
                     new_device_sql = text(
                         f"""INSERT INTO tracking_device (
