@@ -10,6 +10,8 @@ secretGenerator:
     type: Opaque
     envs:
       - .env
+generatorOptions:
+  disableNameSuffixHash: true
 labels:
   - includeSelectors: true
     pairs:
@@ -19,4 +21,4 @@ patches:
   - path: service_patch.yaml
 images:
   - name: ghcr.io/dbca-wa/fleetcare-data-harvest
-    newTag: 1.0.2
+    newTag: 1.0.3

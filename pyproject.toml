@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fleetcare-data-harvest"
-version = "1.0.2"
+version = "1.0.3"
 description = "A basic web service to act as a webhook for an Azure EventGrid subscription (BlobCreated events)"
 authors = ["Ashley Felton <ashley@ropable.com>"]
 license = "Apache-2.0"
@@ -9,14 +9,14 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.12"
 bottle = "0.13.2"
-sqlalchemy = "2.0.35"
+sqlalchemy = "2.0.36"
 psycopg = { version = "3.2.3", extras = ["binary", "pool"] }
 python-dotenv = "1.0.1"
 azure-storage-blob = "12.23.1"
 gunicorn = "23.0.0"
 
 [tool.poetry.group.dev.dependencies]
-ipython = "^8.28.0"
+ipython = "^8.29.0"
 pre-commit = "^4.0.1"
 
 [build-system]
