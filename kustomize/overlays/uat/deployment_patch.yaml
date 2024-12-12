@@ -2,33 +2,25 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: fleetcare-data-harvest
-  labels:
-    app: fleetcare-data-harvest-uat
 spec:
-  selector:
-    matchLabels:
-      app: fleetcare-data-harvest-uat
   template:
-    metadata:
-      labels:
-        app: fleetcare-data-harvest-uat
     spec:
       containers:
-      - name: fleetcare-data-harvest
-        imagePullPolicy: Always
-        env:
-          - name: DATABASE_URL
-            valueFrom:
-              secretKeyRef:
-                name: fleetcare-data-harvest-env-uat
-                key: DATABASE_URL
-          - name: AZURE_STORAGE_CONNECTION_STRING
-            valueFrom:
-              secretKeyRef:
-                name: fleetcare-data-harvest-env-uat
-                key: AZURE_STORAGE_CONNECTION_STRING
-          - name: AZURE_CONTAINER
-            valueFrom:
-              secretKeyRef:
-                name: fleetcare-data-harvest-env-uat
-                key: AZURE_CONTAINER
+        - name: fleetcare-data-harvest
+          imagePullPolicy: Always
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: fleetcare-data-harvest-env-uat
+                  key: DATABASE_URL
+            - name: AZURE_STORAGE_CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: fleetcare-data-harvest-env-uat
+                  key: AZURE_STORAGE_CONNECTION_STRING
+            - name: AZURE_CONTAINER
+              valueFrom:
+                secretKeyRef:
+                  name: fleetcare-data-harvest-env-uat
+                  key: AZURE_CONTAINER
