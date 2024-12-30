@@ -5,5 +5,5 @@ metadata:
 spec:
   type: ClusterIP
   selector:
-    app: fleetcare-data-harvest-prod
+    app: fleetcare-data-harvest
     variant: prod
