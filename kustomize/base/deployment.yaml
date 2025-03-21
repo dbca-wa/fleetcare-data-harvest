@@ -21,14 +21,14 @@ spec:
           image: ghcr.io/dbca-wa/fleetcare-data-harvest
           env:
             - name: TZ
-              value: "Australia/Perth"
+              value: 'Australia/Perth'
           resources:
             requests:
-              memory: "64Mi"
-              cpu: "5m"
+              memory: '64Mi'
+              cpu: '5m'
             limits:
-              memory: "2048Mi"
-              cpu: "1000m"
+              memory: '2048Mi'
+              cpu: '1000m'
           startupProbe:
             httpGet:
               path: /livez
@@ -73,6 +73,7 @@ spec:
       volumes:
         - name: tmpfs-ram
           emptyDir:
-            medium: "Memory"
+            medium: 'Memory'
       restartPolicy: Always
       terminationGracePeriodSeconds: 180
+      automountServiceAccountToken: false
