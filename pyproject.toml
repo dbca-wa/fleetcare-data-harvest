@@ -1,24 +1,29 @@
-[tool.poetry]
+[project]
 name = "fleetcare-data-harvest"
-version = "1.0.3"
+version = "1.0.4"
 description = "A basic web service to act as a webhook for an Azure EventGrid subscription (BlobCreated events)"
-authors = ["Ashley Felton <ashley@ropable.com>"]
+authors = [{ name = "Ashley Felton", email = "ashley.felton@dbca.wa.gov.au" }]
 license = "Apache-2.0"
 readme = "README.md"
+requires-python = ">=3.12,<4.0"
 
-[tool.poetry.dependencies]
-python = "^3.12"
-bottle = "0.13.2"
-sqlalchemy = "2.0.36"
-psycopg = { version = "3.2.3", extras = ["binary", "pool"] }
-python-dotenv = "1.0.1"
-azure-storage-blob = "12.23.1"
-gunicorn = "23.0.0"
+dependencies = [
+  "bottle==0.13.2",
+  "sqlalchemy==2.0.36",
+  "psycopg[binary,pool]==3.2.5",
+  "python-dotenv==1.0.1",
+  "gunicorn==23.0.0",
+  "azure-storage-blob==12.23.1",
+]
 
-[tool.poetry.group.dev.dependencies]
-ipython = "^8.29.0"
-pre-commit = "^4.0.1"
+[dependency-groups]
+dev = ["ipython>=8.31.0", "pre-commit>=4.0.1"]
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+ignore = [
+  "E501", # Line too long
+  "E722", # Bare except
+]

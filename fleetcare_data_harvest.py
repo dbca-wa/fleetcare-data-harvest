@@ -57,10 +57,7 @@ def handle_post():
                 return {"validationResponse": validation_code}
 
             # Handle BlobCreated events.
-            elif (
-                "eventType" in event
-                and event["eventType"] == "Microsoft.Storage.BlobCreated"
-            ):
+            elif "eventType" in event and event["eventType"] == "Microsoft.Storage.BlobCreated":
                 blob_url = event["data"]["url"]
                 blob_client = get_blob_client(blob_url)
                 blob_content = blob_client.download_blob().read()
@@ -71,24 +68,10 @@ def handle_post():
                 rego = data["vehicleRego"]
                 coords = data["GPS"]["coordinates"]
                 point = f"SRID=4326;POINT({coords[0]} {coords[1]})"
-                heading = (
-                    float(data["readings"]["vehicleHeading"])
-                    if data["readings"]["vehicleHeading"]
-                    else 0
-                )
-                velocity = (
-                    float(data["readings"]["vehicleSpeed"])
-                    if data["readings"]["vehicleSpeed"]
-                    else 0
-                )
-                altitude = (
-                    float(data["readings"]["vehicleAltitude"])
-                    if data["readings"]["vehicleAltitude"]
-                    else 0
-                )
-                timestamp = datetime.strptime(
-                    data["timestamp"], "%d/%m/%Y %I:%M:%S %p"
-                ).astimezone(TZ)
+                heading = float(data["readings"]["vehicleHeading"]) if data["readings"]["vehicleHeading"] else 0
+                velocity = float(data["readings"]["vehicleSpeed"]) if data["readings"]["vehicleSpeed"] else 0
+                altitude = float(data["readings"]["vehicleAltitude"]) if data["readings"]["vehicleAltitude"] else 0
+                timestamp = datetime.strptime(data["timestamp"], "%d/%m/%Y %I:%M:%S %p").astimezone(TZ)
                 seen = timestamp.strftime("%Y-%m-%d %H:%M:%S+8")
                 now_awst = datetime.now().astimezone(TZ)
                 message = 3
@@ -114,9 +97,7 @@ def handle_post():
                             """
                         )
                         SESSION.execute(device_sql)
-                        LOGGER.info(
-                            f"Updated device ID {device_id} registration to {rego}"
-                        )
+                        LOGGER.info(f"Updated device ID {device_id} registration to {rego}")
                     # Only update device data if the tracking point was newer than the current device data,
                     # and the tracking point timestamp is no later than "now" in AWST.
                     # Tracking devices sometimes move outside the AWST boundaries, and thus may appear to be
@@ -135,9 +116,7 @@ def handle_post():
                             """
                         )
                         SESSION.execute(device_sql)
-                        LOGGER.info(
-                            f"Updated device ID {device_id} ({rego}) last seen to {seen}"
-                        )
+                        LOGGER.info(f"Updated device ID {device_id} ({rego}) last seen to {seen}")
                 else:  # Create a new device.
                     new_device_sql = text(
                         f"""INSERT INTO tracking_device (
