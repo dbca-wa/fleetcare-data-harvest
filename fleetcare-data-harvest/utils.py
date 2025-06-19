@@ -1,14 +1,15 @@
-from azure.storage.blob import BlobClient
 import logging
 import os
 import sys
+
+from azure.storage.blob import BlobClient
 
 
 def configure_logging():
     """
     Configure logging (stdout and file) for the default logger and for the `azure` logger.
     """
-    formatter = logging.Formatter("%(asctime)s | %(levelname)s | %(message)s")
+    formatter = logging.Formatter("{asctime} | {levelname} | {message}", style="{")
     handler = logging.StreamHandler(sys.stdout)
     handler.setLevel(logging.INFO)
     handler.setFormatter(formatter)
@@ -38,9 +39,7 @@ def get_blob_client(blob_url, conn_str=None, container_name=None):
         container_name = os.getenv("AZURE_CONTAINER")
 
     # Instantiate a BlobClient from the connection string to get the credential.
-    credential = BlobClient.from_connection_string(
-        conn_str, container_name, "blob"
-    ).credential
+    credential = BlobClient.from_connection_string(conn_str, container_name, "blob").credential
 
     # Instantiate and return a BlobClient using the credential.
     return BlobClient.from_blob_url(blob_url, credential)
