@@ -7,7 +7,7 @@ db = SQLAlchemy()
 def get_device(deviceid, source_device_type="fleetcare"):
     """Query the database for a Fleetcare device by unique `deviceid`."""
     sql = text(
-        """SELECT id, seen, registration
+        """SELECT id, seen, registration, deviceid
 FROM tracking_device
 WHERE deviceid = :deviceid
 AND source_device_type = :source_device_type"""
@@ -30,6 +30,8 @@ WHERE id = :id"""
         registration=registration,
     )
     db.session.execute(sql)
+    db.session.commit()
+    return True
 
 
 def update_device_details(id, seen, point_wkt, velocity, altitude, heading):
@@ -49,6 +51,8 @@ WHERE id = :id""").bindparams(
         heading=heading,
     )
     db.session.execute(sql)
+    db.session.commit()
+    return True
 
 
 def create_device(
@@ -119,6 +123,8 @@ def create_device(
         source_device_type=source_device_type,
     )
     db.session.execute(sql)
+    db.session.commit()
+    return True
 
 
 def create_loggedpoint(point_wkt, heading, velocity, altitude, seen, id, blob_url, message=3, source_device_type="fleetcare"):
@@ -156,3 +162,5 @@ VALUES (
         blob_url=blob_url,
     )
     db.session.execute(sql)
+    db.session.commit()
+    return True

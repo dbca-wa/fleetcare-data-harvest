@@ -1,0 +1,32 @@
+{
+  "format": "dynamics",
+  "version": "1.0",
+  "vehicleID": "",
+  "vehicleRego": "1ABCDEF",
+  "driver": "",
+  "timestamp": "",
+  "readings": {
+    "engineSpeedRevolutionsPerMinute": "0",
+    "vehicleSpeed": "0",
+    "vehicleHeading": "222.8",
+    "vehicleAltitude": "8.8",
+    "batteryVoltage": "13.70",
+    "eventId": "130",
+    "tankLevel": "0",
+    "fuelUsage": "0.00",
+    "deviceBatteryVoltage": "13.7",
+    "vehicleVIN": "",
+    "vehicleOdometer": "0",
+    "accelerationStatus": "0",
+    "decellerationStatus": "0",
+    "accelerometerXYZ": "0,0,0",
+    "vehicleDTC": "0",
+    "gpsHDOP": "0.8",
+    "gpsLock": "0",
+    "gpsSatellite": "14",
+    "ignition": "0"
+  },
+  "GPS": {
+    "coordinates": [115.8857, -31.9955]
+  }
+}

@@ -6,7 +6,7 @@ from zoneinfo import ZoneInfo
 
 from azure.storage.blob import BlobClient
 
-from .database import create_device, create_loggedpoint, db, get_device, update_device_details, update_device_registration
+from .database import create_device, create_loggedpoint, get_device, update_device_details, update_device_registration
 
 TZ = ZoneInfo("Australia/Perth")
 
@@ -51,7 +51,7 @@ def get_blob_client(blob_url, conn_str=None, container_name=None):
     return BlobClient.from_blob_url(blob_url, credential)
 
 
-def handle_blob_created_event(data, blob_url, logger=None):
+def handle_blob_created_event(data, blob_url="http://blob", logger=None):
     # NOTE: we prepend deviceid with `fc_` to avoid unique ID collision with other source types.
     deviceid = f"fc_{data['vehicleID']}"
     registration = data["vehicleRego"]
@@ -101,6 +101,4 @@ def handle_blob_created_event(data, blob_url, logger=None):
     if logger:
         logger.info(f"Logged point for device {id}: {registration}, {seen}")
 
-    db.session.commit()
-
-    return device
+    return True

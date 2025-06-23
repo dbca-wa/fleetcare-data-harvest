@@ -6,7 +6,7 @@ from sqlalchemy.sql import text
 from .database import db
 from .utils import configure_logging, get_blob_client, handle_blob_created_event
 
-bp = Blueprint("fleetcare-data-harvest", __name__)
+bp = Blueprint("fleetcare_data_harvest", __name__)
 logger = configure_logging()
 
 

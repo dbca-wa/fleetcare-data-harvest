@@ -35,13 +35,19 @@ This project uses **python-dotenv** to set environment variables (in a `.env` fi
     AZURE_STORAGE_CONNECTION_STRING=AzureConnectionString
     AZURE_CONTAINER=container
 
-## Running
+## Usage
 
 Run a local copy of the application like so:
 
     flask --app fleetcare-data-harvest run --debug --port 8080 --reload
     # Serve via Gunicorn:
     gunicorn 'fleetcare-data-harvest:create_app()' --config gunicorn.py --reload
+
+## Testing
+
+Set up a test database (if required), and run unit tests using `pytest`:
+
+    pytest -s --dburl postgresql+psycopg://user:password@hostname/dbname
 
 ## Docker image
 
@@ -59,5 +65,3 @@ Pre-commit hooks may have additional system dependencies to run. Optionally
 install pre-commit hooks locally like so (with the virtualenv activated first):
 
     pre-commit install
-
-Reference: <https://pre-commit.com/>

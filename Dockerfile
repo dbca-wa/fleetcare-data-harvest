@@ -48,7 +48,7 @@ ENV PYTHONUNBUFFERED=1
 # Install the project.
 WORKDIR /app
 COPY entrypoint.sh gunicorn.py ./
-COPY fleetcare-data-harvest ./fleetcare-data-harvest
+COPY fleetcare_data_harvest ./fleetcare_data_harvest
 USER app
 EXPOSE 8080
 # Use entrypoint.sh because we need to single-quote the run command.

@@ -16,7 +16,7 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["ipdb>=0.13.13", "ipython>=8.31.0", "pre-commit>=4.2.0"]
+dev = ["ipdb>=0.13.13", "ipython>=8.31.0", "pre-commit>=4.2.0", "pytest>=8.4.1"]
 
 [build-system]
 requires = ["pdm-backend"]
@@ -24,6 +24,7 @@ build-backend = "pdm.backend"
 
 [tool.ruff]
 line-length = 140
+indent-width = 4
 
 [tool.ruff.lint]
 ignore = [

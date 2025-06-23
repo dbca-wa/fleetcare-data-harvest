@@ -1,2 +1,2 @@
 #!/bin/bash
-gunicorn 'fleetcare-data-harvest:create_app()' --config gunicorn.py
+gunicorn 'fleetcare_data_harvest:create_app()' --config gunicorn.py
