@@ -39,9 +39,9 @@ This project uses **python-dotenv** to set environment variables (in a `.env` fi
 
 Run a local copy of the application like so:
 
-    quart --app fleetcare-data-harvest run --port 8080 --reload
-    # Serve via HyperCorn instead of Quart:
-    hypercorn fleetcare-data-harvest:app --config hypercorn.toml --reload
+    flask --app fleetcare-data-harvest run --debug --port 8080 --reload
+    # Serve via Gunicorn:
+    gunicorn 'fleetcare-data-harvest:create_app()' --config gunicorn.py --reload
 
 ## Docker image
 

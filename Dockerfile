@@ -47,7 +47,7 @@ ENV PYTHONUNBUFFERED=1
 
 # Install the project.
 WORKDIR /app
-COPY entrypoint.sh hypercorn.toml ./
+COPY entrypoint.sh gunicorn.py ./
 COPY fleetcare-data-harvest ./fleetcare-data-harvest
 USER app
 EXPOSE 8080

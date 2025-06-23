@@ -1,2 +1,2 @@
 #!/bin/bash
-hypercorn 'fleetcare-data-harvest:create_app()' --config hypercorn.toml
+gunicorn 'fleetcare-data-harvest:create_app()' --config gunicorn.py
