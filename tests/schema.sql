@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS tracking_device (
-    id integer NOT NULL PRIMARY KEY,
+    id SERIAL NOT NULL PRIMARY KEY,
     point public.geometry(Point,4326),
     heading integer NOT NULL,
     velocity integer NOT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS tracking_device (
     fire_type boolean
 );
 CREATE TABLE IF NOT EXISTS tracking_loggedpoint (
-    id integer NOT NULL PRIMARY KEY,
+    id SERIAL NOT NULL PRIMARY KEY,
     point public.geometry(Point,4326) NOT NULL,
     heading integer NOT NULL,
     velocity integer NOT NULL,
