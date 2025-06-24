@@ -8,11 +8,11 @@ ingest data from uploaded blobs, and create tracking data within the Resource Tr
 This project uses [uv](https://docs.astral.sh/uv/) to manage and install Python dependencies.
 With uv installed, install the required Python version (see `pyproject.toml`). Example:
 
-    uv python install 3.12
+    uv python install 3.13
 
 Change into the project directory and run:
 
-    uv python pin 3.12
+    uv python pin 3.13
     uv sync
 
 Activate the virtualenv like so:
@@ -31,19 +31,23 @@ Manage new or updated project dependencies with uv also, like so:
 
 This project uses **python-dotenv** to set environment variables (in a `.env` file):
 
-    PORT=8080  # Optional
     DATABASE_URL=postgis://USER:PASSWORD@HOST:5432/DATABASE_NAME
     AZURE_STORAGE_CONNECTION_STRING=AzureConnectionString
     AZURE_CONTAINER=container
 
-## Running
+## Usage
 
 Run a local copy of the application like so:
 
-    python fleetcare_data_harvest.py
+    flask --app fleetcare-data-harvest run --debug --port 8080 --reload
+    # Serve via Gunicorn:
+    gunicorn 'fleetcare-data-harvest:create_app()' --config gunicorn.py --reload
 
-The application runs on port 8080 by default. To change this, set an environment
-variable value for `PORT`.
+## Testing
+
+Set up a test database (if required), and run unit tests using `pytest`:
+
+    pytest -s --dburl postgresql+psycopg://user:password@hostname/dbname
 
 ## Docker image
 
@@ -61,5 +65,3 @@ Pre-commit hooks may have additional system dependencies to run. Optionally
 install pre-commit hooks locally like so (with the virtualenv activated first):
 
     pre-commit install
-
-Reference: <https://pre-commit.com/>

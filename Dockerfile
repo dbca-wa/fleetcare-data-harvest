@@ -47,7 +47,9 @@ ENV PYTHONUNBUFFERED=1
 
 # Install the project.
 WORKDIR /app
-COPY fleetcare_data_harvest.py gunicorn.py wsgi.py utils.py ./
+COPY entrypoint.sh gunicorn.py ./
+COPY fleetcare_data_harvest ./fleetcare_data_harvest
 USER app
 EXPOSE 8080
-CMD ["gunicorn", "wsgi", "--config", "gunicorn.py"]
+# Use entrypoint.sh because we need to single-quote the run command.
+ENTRYPOINT ["/bin/bash", "entrypoint.sh"]

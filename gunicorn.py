@@ -1,15 +1,7 @@
-import os
+# Gunicorn configuration settings.
 import multiprocessing
 
-dot_env = os.path.join(os.getcwd(), ".env")
-if os.path.exists(dot_env):
-    from dotenv import load_dotenv
-
-    load_dotenv()
-
-# Gunicorn configuration settings.
-port = os.getenv("PORT", 8080)
-bind = f":{port}"
+bind = ":8080"
 # Don't start too many workers:
 workers = min(multiprocessing.cpu_count(), 4)
 # Give workers an expiry:
