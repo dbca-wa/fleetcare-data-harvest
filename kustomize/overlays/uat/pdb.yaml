@@ -6,5 +6,5 @@ spec:
   minAvailable: 1
   selector:
     matchLabels:
-      app: fleetcare-data-harvest-uat
+      app: fleetcare-data-harvest
       variant: uat
