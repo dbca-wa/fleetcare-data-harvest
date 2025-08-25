@@ -27,7 +27,7 @@ def test_blob_created_event_new_rego():
     _data["timestamp"] = then.strftime("%d/%m/%Y %I:%M:%S %p")
     assert handle_blob_created_event(_data)
 
-    _data["vehicleRego"] = f"1{"".join(random.choices(string.ascii_uppercase, k=6))}"
+    _data["vehicleRego"] = f"1{''.join(random.choices(string.ascii_uppercase, k=6))}"
     then = datetime.now() - timedelta(minutes=1)
     _data["timestamp"] = then.strftime("%d/%m/%Y %I:%M:%S %p")
 
