@@ -47,7 +47,7 @@ Run a local copy of the application like so:
 
 Set up a test database (if required), and run unit tests using `pytest`:
 
-    pytest -s --dburl postgresql+psycopg://user:password@hostname/dbname
+    pytest -s --pdb --dburl postgresql+psycopg://user:password@hostname/dbname
 
 ## Docker image
 
