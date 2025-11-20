@@ -7,16 +7,16 @@ license = "Apache-2.0"
 requires-python = ">=3.13,<4.0"
 
 dependencies = [
-  "python-dotenv==1.1.1",
+  "python-dotenv (==1.2.1)",
   "flask==3.1.2",
   "flask-sqlalchemy==3.1.1",
   "gunicorn==23.0.0",
-  "azure-storage-blob==12.27.0",
+  "azure-storage-blob==12.27.1",
   "psycopg[binary,pool]==3.2.11",
 ]
 
 [dependency-groups]
-dev = ["ipython>=9.6.0", "ipdb>=0.13.13", "pre-commit>=4.3.0", "pytest>=8.4.1"]
+dev = ["ipython>=9.7.0", "ipdb>=0.13.13", "pre-commit>=4.3.0", "pytest>=8.4.1"]
 
 [build-system]
 requires = ["pdm-backend"]
