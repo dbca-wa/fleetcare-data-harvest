@@ -1,6 +1,6 @@
 [project]
 name = "fleetcare-data-harvest"
-version = "1.1.1"
+version = "1.1.2"
 description = "A basic web service to act as a webhook for an Azure EventGrid subscription (BlobCreated events)"
 authors = [{ name = "Ashley Felton", email = "ashley.felton@dbca.wa.gov.au" }]
 license = "Apache-2.0"
@@ -12,11 +12,11 @@ dependencies = [
   "flask-sqlalchemy==3.1.1",
   "gunicorn==23.0.0",
   "azure-storage-blob==12.27.1",
-  "psycopg[binary,pool]==3.2.11",
+  "psycopg[binary,pool]==3.3.2",
 ]
 
 [dependency-groups]
-dev = ["ipython>=9.7.0", "ipdb>=0.13.13", "pre-commit>=4.3.0", "pytest>=8.4.1"]
+dev = ["ipython>=9.7.0", "ipdb>=0.13.13", "pre-commit>=4.5.1", "pytest>=9.0.2"]
 
 [build-system]
 requires = ["pdm-backend"]
