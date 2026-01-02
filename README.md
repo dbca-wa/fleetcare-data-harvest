@@ -5,14 +5,9 @@ ingest data from uploaded blobs, and create tracking data within the Resource Tr
 
 ## Installation
 
-This project uses [uv](https://docs.astral.sh/uv/) to manage and install Python dependencies.
-With uv installed, install the required Python version (see `pyproject.toml`). Example:
+Dependencies for this project are managed using [uv](https://docs.astral.sh/uv/).
+With uv installed, change into the project directory and run:
 
-    uv python install 3.13
-
-Change into the project directory and run:
-
-    uv python pin 3.13
     uv sync
 
 Activate the virtualenv like so:
@@ -31,7 +26,7 @@ Manage new or updated project dependencies with uv also, like so:
 
 This project uses **python-dotenv** to set environment variables (in a `.env` file):
 
-    DATABASE_URL=postgis://USER:PASSWORD@HOST:5432/DATABASE_NAME
+    DATABASE_URL=postgresql+psycopg://USER:PASSWORD@HOST:5432/DATABASE_NAME
     AZURE_STORAGE_CONNECTION_STRING=AzureConnectionString
     AZURE_CONTAINER=container
 
