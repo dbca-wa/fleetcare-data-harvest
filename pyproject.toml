@@ -11,12 +11,12 @@ dependencies = [
   "flask==3.1.2",
   "flask-sqlalchemy==3.1.1",
   "gunicorn==23.0.0",
-  "azure-storage-blob==12.27.1",
+  "azure-storage-blob==12.28.0",
   "psycopg[binary,pool]==3.3.2",
 ]
 
 [dependency-groups]
-dev = ["ipython>=9.7.0", "ipdb>=0.13.13", "pre-commit>=4.5.1", "pytest>=9.0.2"]
+dev = ["ipython>=9.9.0", "ipdb>=0.13.13", "pre-commit>=4.5.1", "pytest>=9.0.2"]
 
 [build-system]
 requires = ["pdm-backend"]
