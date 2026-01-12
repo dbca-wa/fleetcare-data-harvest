@@ -11,7 +11,7 @@ dependencies = [
   "flask==3.1.2",
   "flask-sqlalchemy==3.1.1",
   "gunicorn==23.0.0",
-  "azure-storage-blob==12.27.1",
+  "azure-storage-blob==12.28.0",
   "psycopg[binary,pool]==3.3.2",
 ]
 
