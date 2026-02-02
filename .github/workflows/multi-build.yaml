@@ -3,6 +3,9 @@
 name: Build multi-architecture Docker Image with separate GitHub Runners and run vulnerability scan
 
 on:
+  schedule:
+    # 0517 AWST (2117 UTC), Mon-Fri
+    - cron: '17 21 * * 1-5'
   push:
     branches:
       - main
@@ -112,6 +115,14 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Log in to Docker Hardened Images Registry
+        # This step logs into the Docker Hardened Images Registry in order to download the required images.
+        uses: docker/login-action@v3
+        with:
+          registry: dhi.io
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Build and push by digest
         # This step builds and pushes the Docker image using Buildx.
