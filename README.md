@@ -36,7 +36,7 @@ Run a local copy of the application like so:
 
     flask --app fleetcare-data-harvest run --debug --port 8080 --reload
     # Serve via Gunicorn:
-    gunicorn 'fleetcare-data-harvest:create_app()' --config gunicorn.py --reload
+    gunicorn 'fleetcare_data_harvest:create_app()' --config gunicorn.py --reload
 
 ## Testing
 
