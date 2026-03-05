@@ -2,6 +2,7 @@ import logging
 import os
 import sys
 from datetime import datetime
+from typing import Literal
 from zoneinfo import ZoneInfo
 
 from azure.storage.blob import BlobClient
@@ -11,7 +12,7 @@ from .database import create_device, create_loggedpoint, get_device, update_devi
 TZ = ZoneInfo("Australia/Perth")
 
 
-def configure_logging():
+def configure_logging() -> logging.Logger:
     """
     Configure logging (stdout and file) for the default logger and for the `azure` logger.
     """
@@ -32,7 +33,7 @@ def configure_logging():
     return logger
 
 
-def get_blob_client(blob_url, conn_str=None, container_name=None):
+def get_blob_client(blob_url: str, conn_str: str | None = None, container_name: str | None = None) -> BlobClient:
     """
     Returns a BlobClient from a URL. If the connection strinf and container name aren't
     passed in, assume that they are present as environment variables.
@@ -51,15 +52,15 @@ def get_blob_client(blob_url, conn_str=None, container_name=None):
     return BlobClient.from_blob_url(blob_url, credential)
 
 
-def handle_blob_created_event(data, blob_url="http://blob", logger=None):
+def handle_blob_created_event(data, blob_url="http://blob", logger=None) -> Literal[True] | None:
     # NOTE: we prepend deviceid with `fc_` to avoid unique ID collision with other source types.
     deviceid = f"fc_{data['vehicleID']}"
     registration = data["vehicleRego"]
     coords = data["GPS"]["coordinates"]
     point_wkt = f"POINT({coords[0]} {coords[1]})"
-    heading = float(data["readings"]["vehicleHeading"]) if data["readings"]["vehicleHeading"] else 0
-    velocity = float(data["readings"]["vehicleSpeed"]) if data["readings"]["vehicleSpeed"] else 0
-    altitude = float(data["readings"]["vehicleAltitude"]) if data["readings"]["vehicleAltitude"] else 0
+    heading = float(data["readings"]["vehicleHeading"]) if data["readings"]["vehicleHeading"] else 0.0
+    velocity = float(data["readings"]["vehicleSpeed"]) if data["readings"]["vehicleSpeed"] else 0.0
+    altitude = float(data["readings"]["vehicleAltitude"]) if data["readings"]["vehicleAltitude"] else 0.0
     seen = datetime.strptime(data["timestamp"], "%d/%m/%Y %I:%M:%S %p").astimezone(TZ)
     now_awst = datetime.now().astimezone(TZ)
 
@@ -94,7 +95,10 @@ def handle_blob_created_event(data, blob_url="http://blob", logger=None):
             logger.info(f"Created device {deviceid}: {registration}, {seen}")
 
         device = get_device(deviceid)
-        id = device[0]
+        if device:
+            id = device[0]
+        else:
+            return
 
     # Insert new loggedpoint record.
     create_loggedpoint(point_wkt, heading, velocity, altitude, seen, id, blob_url)

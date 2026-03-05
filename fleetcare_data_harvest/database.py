@@ -1,10 +1,13 @@
+from typing import Any, Literal
+
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.engine import Row
 from sqlalchemy.sql import text
 
 db = SQLAlchemy()
 
 
-def get_device(deviceid, source_device_type="fleetcare"):
+def get_device(deviceid, source_device_type="fleetcare") -> Row[Any] | None:
     """Query the database for a Fleetcare device by unique `deviceid`."""
     sql = text(
         """SELECT id, seen, registration, deviceid
@@ -19,7 +22,7 @@ AND source_device_type = :source_device_type"""
     return device
 
 
-def update_device_registration(id, registration):
+def update_device_registration(id, registration) -> Literal[True]:
     """Update a tracking device registration value."""
     sql = text(
         """UPDATE tracking_device
@@ -34,7 +37,7 @@ WHERE id = :id"""
     return True
 
 
-def update_device_details(id, seen, point_wkt, velocity, altitude, heading):
+def update_device_details(id, seen, point_wkt, velocity, altitude, heading) -> Literal[True]:
     """Update tracking device details."""
     sql = text("""UPDATE tracking_device
 SET seen = :seen,
@@ -71,7 +74,7 @@ def create_device(
     deleted=False,
     message=3,
     source_device_type="fleetcare",
-):
+) -> Literal[True]:
     """Create a new device record."""
     sql = text("""INSERT INTO tracking_device (
     deviceid,
@@ -127,7 +130,9 @@ def create_device(
     return True
 
 
-def create_loggedpoint(point_wkt, heading, velocity, altitude, seen, id, blob_url, message=3, source_device_type="fleetcare"):
+def create_loggedpoint(
+    point_wkt, heading, velocity, altitude, seen, id, blob_url, message=3, source_device_type="fleetcare"
+) -> Literal[True]:
     """Create a new logged point record."""
     sql = text("""INSERT INTO tracking_loggedpoint (
     point,
