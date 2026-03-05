@@ -35,21 +35,21 @@ def configure_logging() -> logging.Logger:
 
 def get_blob_client(blob_url: str, conn_str: str | None = None, container_name: str | None = None) -> BlobClient:
     """
-    Returns a BlobClient from a URL. If the connection strinf and container name aren't
+    Returns a BlobClient from a URL. If the connection string and container name aren't
     passed in, assume that they are present as environment variables.
 
     https://learn.microsoft.com/en-us/python/api/azure-storage-blob/azure.storage.blob.blobclient
     """
     if not conn_str:
-        conn_str = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
+        conn_str = os.getenv("AZURE_STORAGE_CONNECTION_STRING", "")
     if not container_name:
-        container_name = os.getenv("AZURE_CONTAINER")
+        container_name = os.getenv("AZURE_CONTAINER", "")
 
-    # Instantiate a BlobClient from the connection string to get the credential.
-    credential = BlobClient.from_connection_string(conn_str, container_name, "blob").credential
+    # Instantiate a BlobClient from the connection string to get a credential to use below.
+    client = BlobClient.from_connection_string(conn_str, container_name, "blob")
 
     # Instantiate and return a BlobClient using the credential.
-    return BlobClient.from_blob_url(blob_url, credential)
+    return BlobClient.from_blob_url(blob_url, client.credential)
 
 
 def handle_blob_created_event(data, blob_url="http://blob", logger=None) -> Literal[True] | None:
