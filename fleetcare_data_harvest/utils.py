@@ -3,6 +3,7 @@ import os
 import sys
 from datetime import datetime
 from typing import Literal
+from urllib.parse import urlparse
 from zoneinfo import ZoneInfo
 
 from azure.storage.blob import BlobClient
@@ -33,7 +34,7 @@ def configure_logging() -> logging.Logger:
     return logger
 
 
-def get_blob_client(blob_url: str, conn_str: str | None = None, container_name: str | None = None) -> BlobClient:
+def get_blob_client(blob_url: str, conn_str: str | None = None, container_name: str | None = None) -> BlobClient | None:
     """
     Returns a BlobClient from a URL. If the connection string and container name aren't
     passed in, assume that they are present as environment variables.
@@ -45,6 +46,11 @@ def get_blob_client(blob_url: str, conn_str: str | None = None, container_name: 
     if not container_name:
         container_name = os.getenv("AZURE_CONTAINER", "")
 
+    # Validate the blob_url value, given that is is sourced from the incoming HTTP request.
+    parsed_url = urlparse(blob_url)
+    if parsed_url.netloc != "dbcafleetcaredata.blob.core.windows.net":
+        return None
+
     # Instantiate a BlobClient from the connection string to get a credential to use below.
     client = BlobClient.from_connection_string(conn_str, container_name, "blob")
 
@@ -52,7 +58,7 @@ def get_blob_client(blob_url: str, conn_str: str | None = None, container_name: 
     return BlobClient.from_blob_url(blob_url, client.credential)
 
 
-def handle_blob_created_event(data, blob_url="http://blob", logger=None) -> Literal[True] | None:
+def handle_blob_created_event(data: dict, blob_url: str, logger: logging.Logger | None = None) -> Literal[True] | None:
     # NOTE: we prepend deviceid with `fc_` to avoid unique ID collision with other source types.
     deviceid = f"fc_{data['vehicleID']}"
     registration = data["vehicleRego"]

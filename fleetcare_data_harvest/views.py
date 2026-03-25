@@ -41,6 +41,10 @@ def index():
             elif "eventType" in event and event["eventType"] == "Microsoft.Storage.BlobCreated":
                 blob_url = event["data"]["url"]
                 blob_client = get_blob_client(blob_url)
+
+                if not blob_client:  # We didn't instantiate a blob client.
+                    abort(400, "Invalid request")
+
                 blob_content = blob_client.download_blob().read()
                 data = json.loads(blob_content)
                 handle_blob_created_event(data, blob_url, logger)
