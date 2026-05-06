@@ -74,7 +74,7 @@ def create_device(
     deleted=False,
     message=3,
     source_device_type="fleetcare",
-) -> Literal[True]:
+) -> Row[Any] | None:
     """Create a new device record."""
     sql = text("""INSERT INTO tracking_device (
     deviceid,
@@ -108,7 +108,9 @@ def create_device(
     :altitude,
     :message,
     :source_device_type
-)""").bindparams(
+)
+ON CONFLICT (deviceid) DO NOTHING
+RETURNING id, seen, registration, deviceid""").bindparams(
         deviceid=deviceid,
         registration=registration,
         symbol=symbol,
@@ -125,9 +127,9 @@ def create_device(
         message=message,
         source_device_type=source_device_type,
     )
-    db.session.execute(sql)
+    result = db.session.execute(sql).fetchone()
     db.session.commit()
-    return True
+    return result
 
 
 def create_loggedpoint(

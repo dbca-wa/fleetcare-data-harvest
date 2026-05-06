@@ -96,15 +96,16 @@ def handle_blob_created_event(data: dict, blob_url: str, logger: logging.Logger 
             if logger:
                 logger.info(f"Updated device {id} ({registration}) last seen to {seen}")
     else:  # Create a new device.
-        create_device(deviceid, registration, seen, point_wkt, heading, velocity, altitude)
-        if logger:
-            logger.info(f"Created device {deviceid}: {registration}, {seen}")
-
-        device = get_device(deviceid)
+        device = create_device(deviceid, registration, seen, point_wkt, heading, velocity, altitude)
         if device:
-            id = device[0]
+            if logger:
+                logger.info(f"Created device {deviceid}: {registration}, {seen}")
         else:
-            return
+            # Another worker inserted this device concurrently; retrieve it.
+            device = get_device(deviceid)
+            if not device:
+                return
+        id = device[0]
 
     # Insert new loggedpoint record.
     create_loggedpoint(point_wkt, heading, velocity, altitude, seen, id, blob_url)

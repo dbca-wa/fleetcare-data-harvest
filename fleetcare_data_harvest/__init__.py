@@ -22,6 +22,7 @@ def create_app(app_config=None):
     else:
         app.config["SQLALCHEMY_DATABASE_URI"] = database_url
         app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+        app.config["MAX_CONTENT_LENGTH"] = 1 * 1024 * 1024  # 1 MB
 
     db.init_app(app)
 
