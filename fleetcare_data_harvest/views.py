@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+from urllib.parse import urlparse
 
 from flask import Blueprint, abort, request
 from sqlalchemy.sql import text
@@ -46,6 +47,11 @@ def index():
                     abort(400, "Invalid request")
 
                 blob_url = event["data"]["url"]
+                # Validate the blob_url value, given that is is sourced from the incoming HTTP request.
+                parsed_blob_url = urlparse(blob_url)
+                if parsed_blob_url.netloc != "dbcafleetcaredata.blob.core.windows.net":
+                    abort(400, "Invalid request")
+
                 blob_client = get_blob_client(blob_url)
 
                 if not blob_client:  # We didn't instantiate a blob client.
