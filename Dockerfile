@@ -1,37 +1,50 @@
 # syntax=docker/dockerfile:1
-FROM dhi.io/python:3.13-debian13-dev AS build-stage
-LABEL org.opencontainers.image.authors=asi@dbca.wa.gov.au
-LABEL org.opencontainers.image.source=https://github.com/dbca-wa/fleetcare-data-harvest
+# Args to centralise versions.
+ARG PYTHON_VERSION=3.13-debian13-dev
 
-# Install system packages required to install the project
-RUN apt-get update -y \
-  # Python package dependencies: gunicorn_h1c requires gcc
-  && apt-get install -y --no-install-recommends gcc g++ \
-  # Run shared library linker after installing packages
-  && ldconfig \
-  && rm -rf /var/lib/apt/lists/*
+# ---- Builder stage ----
+FROM dhi.io/python:${PYTHON_VERSION} AS builder
 
-# Copy and configure uv, to install dependencies
-COPY --from=ghcr.io/astral-sh/uv:0.11 /uv /bin/
+RUN <<EOF
+set -euxo pipefail
+apt-get update
+apt-get install -y --no-install-recommends \
+  gcc \
+  g++
+EOF
+
 WORKDIR /app
-# Install project dependencies
+COPY --from=ghcr.io/astral-sh/uv:0.12 /uv /bin/
 COPY pyproject.toml uv.lock ./
-RUN uv sync --no-group dev --link-mode=copy --compile-bytecode --no-python-downloads --frozen \
-  # Remove uv and lockfile after use
-  && rm -rf /bin/uv \
-  && rm uv.lock
+RUN uv sync --no-group dev --link-mode=copy --compile-bytecode --no-python-downloads --frozen
+
+# ---- Runtime stage ----
+FROM dhi.io/python:${PYTHON_VERSION} AS runtime
+LABEL org.opencontainers.image.title="fleetcare-data-harvest" \
+  org.opencontainers.image.description="Fleetcare data harvest webhook" \
+  org.opencontainers.image.source="https://github.com/dbca-wa/fleetcare-data-harvest" \
+  org.opencontainers.image.vendor="DBCA" \
+  org.opencontainers.image.authors="asi@dbca.wa.gov.au"
 
 # Environment variables
-ENV PYTHONUNBUFFERED=1
-ENV PATH="/app/.venv/bin:$PATH"
+ENV PYTHONUNBUFFERED=1 \
+  PYTHONDONTWRITEBYTECODE=1 \
+  PATH="/app/.venv/bin:$PATH"
+
+WORKDIR /app
+
+# Copy installed virtualenv from builder
+COPY --from=builder /app /app
 
 # Copy the remaining project files to finish building the project
-COPY entrypoint.sh gunicorn.py ./
-COPY fleetcare_data_harvest ./fleetcare_data_harvest
+COPY --chown=nonroot:nonroot entrypoint.sh gunicorn.py ./
+COPY --chown=nonroot:nonroot fleetcare_data_harvest ./fleetcare_data_harvest
+
 # Compile scripts
 RUN python -m compileall fleetcare_data_harvest
 
 # Image runs as the nonroot user
+USER nonroot
 EXPOSE 8080
 
 # Use entrypoint.sh because we need to single-quote the run command.
