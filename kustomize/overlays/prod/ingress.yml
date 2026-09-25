@@ -12,6 +12,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: fleetcare-data-harvest-clusterip-prod
+                name: fleetcare-data-harvest-prod
                 port:
                   number: 8080

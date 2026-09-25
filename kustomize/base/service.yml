@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: fleetcare-data-harvest-clusterip
+  name: fleetcare-data-harvest
 spec:
   type: ClusterIP
   ports:
