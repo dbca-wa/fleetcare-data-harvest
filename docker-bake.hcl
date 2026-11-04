@@ -2,7 +2,7 @@
 # Build (local single-platform): docker buildx bake
 # Build + push (multi-arch):      docker buildx bake --push
 # Override at runtime:            TAG=v2 REGISTRY=ghcr.io/me docker buildx bake
-# Override a Dockerfile ARG:      docker buildx bake --set app.args.PYTHON_VERSION=3.13-debian13-dev
+# Override a Dockerfile ARG:      docker buildx bake --set app.args.PYTHON_VERSION=3.13-debian13
 
 variable "TAG" {
   default = "latest"
