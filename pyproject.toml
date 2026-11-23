@@ -12,7 +12,7 @@ dependencies = [
   "flask-sqlalchemy==3.1.1",
   "gunicorn[fast]==26.2.0",
   "azure-storage-blob==12.31.1",
-  "psycopg[binary,pool]==3.3.8",
+  "psycopg[binary,pool]==3.3.9",
 ]
 
 [dependency-groups]
